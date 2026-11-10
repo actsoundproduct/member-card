@@ -1,0 +1,50 @@
+:root {
+  --bg: #f4f1ea;
+  --page-ink: #26221c;   /* 画面の文字色 */
+  --page-sub: #6d665a;   /* 補足の文字色 */
+  --card: #ffffff;       /* カードは常に白（バーコードの読み取りのため） */
+  --ink: #26221c;        /* カードの中の文字色 */
+  --sub: #6d665a;
+  --accent: #2b2b2b;
+  --danger: #b3261e;
+  --line: #e1dccf;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1b1915; --page-ink: #efe9dc; --page-sub: #b9b1a1; --accent: #5a5a5a; --danger: #ff8a80; }
+}
+* { box-sizing: border-box; }
+.card .lead { color: var(--sub) !important; }
+body {
+  margin: 0; background: var(--bg); color: var(--page-ink);
+  font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.6; -webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 440px; margin: 0 auto; padding: 24px 16px 40px; }
+h1 { font-size: 18px; margin: 0 0 4px; letter-spacing: .04em; }
+.lead { color: var(--page-sub); font-size: 14px; margin: 0 0 20px; }
+.card {
+  background: var(--card); color: var(--ink); border-radius: 16px;
+  border: 1px solid var(--line); padding: 20px 16px; text-align: center;
+}
+.card .name { font-size: 18px; font-weight: 700; margin: 0 0 12px; }
+.card svg { width: 100%; height: auto; display: block; }
+.card .code { font-size: 22px; letter-spacing: .12em; font-weight: 700; margin: 8px 0 0; font-variant-numeric: tabular-nums; }
+.hint { color: var(--page-sub); font-size: 13px; margin-top: 14px; }
+form { display: grid; gap: 16px; }
+label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+input[type=text], input[type=tel] {
+  width: 100%; font-size: 16px; padding: 12px; border-radius: 10px;
+  border: 1px solid #cfc8b8; background: #fff; color: #26221c;
+}
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.consent { background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13px; }
+.consent label { font-weight: 400; display: flex; gap: 8px; align-items: flex-start; margin: 8px 0 0; font-size: 14px; }
+.consent input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+button {
+  font-size: 16px; font-weight: 700; padding: 14px; border: 0; border-radius: 12px;
+  background: var(--accent); color: #fff; cursor: pointer; width: 100%;
+}
+button:disabled { opacity: .5; cursor: default; }
+.error { color: var(--danger); font-size: 14px; min-height: 1.4em; }
+.hidden { display: none; }
