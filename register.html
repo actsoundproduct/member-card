@@ -19,6 +19,10 @@
       <div><label for="sei">姓</label><input id="sei" type="text" autocomplete="family-name" maxlength="20" required></div>
       <div><label for="mei">名</label><input id="mei" type="text" autocomplete="given-name" maxlength="20" required></div>
     </div>
+    <div class="row">
+      <div><label for="seiKana">フリガナ（姓）</label><input id="seiKana" type="text" autocomplete="off" maxlength="20" placeholder="ヤマダ" required></div>
+      <div><label for="meiKana">フリガナ（名）</label><input id="meiKana" type="text" autocomplete="off" maxlength="20" placeholder="タロウ" required></div>
+    </div>
     <div>
       <label for="phone">電話番号</label>
       <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09012345678" maxlength="13" required>
@@ -38,13 +42,23 @@
   $('privacy').textContent = App.config.privacyText;
   var ready = App.init();
 
+  // ひらがな→カタカナ。空白を除き、カタカナ・長音・中点だけなら返す（違えば空）
+  function toKana(s) {
+    var k = String(s || '').replace(/[\s　]+/g, '').replace(/[ぁ-ゖ]/g, function (c) {
+      return String.fromCharCode(c.charCodeAt(0) + 0x60);
+    });
+    return /^[ァ-ヶー・]+$/.test(k) ? k : '';
+  }
+
   $('form').addEventListener('submit', function (ev) {
     ev.preventDefault();
     var sei = $('sei').value.trim(), mei = $('mei').value.trim();
     var phone = $('phone').value.replace(/[０-９]/g, function (c) {
       return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
     }).replace(/[^0-9]/g, '');
+    var seiKana = toKana($('seiKana').value), meiKana = toKana($('meiKana').value);
     if (!sei || !mei) { $('error').textContent = 'お名前（姓・名）を入力してください。'; return; }
+    if (!seiKana || !meiKana) { $('error').textContent = 'フリガナ（姓・名）を、カタカナまたはひらがなで入力してください。'; return; }
     if (!/^0\d{9,10}$/.test(phone)) { $('error').textContent = '電話番号をご確認ください（例：09012345678）。'; return; }
     if (!$('consent').checked) { $('error').textContent = '同意にチェックを入れてください。'; return; }
 
@@ -52,7 +66,7 @@
     $('submit').disabled = true;
     $('submit').textContent = '登録しています…';
     ready.then(function () {
-      return App.api('register', { sei: sei, mei: mei, phone: phone, consent: true });
+      return App.api('register', { sei: sei, mei: mei, seiKana: seiKana, meiKana: meiKana, phone: phone, consent: true });
     }).then(function (r) {
       if (!r.ok) throw new Error(r.message || '登録できませんでした。');
       location.href = 'index.html' + location.search;   // 会員証へ
